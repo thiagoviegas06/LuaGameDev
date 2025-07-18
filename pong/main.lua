@@ -1,10 +1,10 @@
-
 --  Game state & methods
 Game = {
     score     = 0,
     lives     = 1,
     dead      = false,
     ballSpeed = -2.5,
+    ballYSpeed = -1.5,
     screenWidth = 800,
     screenHeight = 600, 
 
@@ -23,6 +23,8 @@ function Game:reset()
     self.ball.y    = 300
     self.ballSpeed = -2.5
     self.player.y  = 200
+    self.ballYSpeed = 1.5
+
 end
 
 function Game:handleBallCollision()
@@ -30,14 +32,29 @@ function Game:handleBallCollision()
     if self.ball.x + self.ball.r >= self.wall.x then
         self.ballSpeed = -self.ballSpeed
         self.score     = self.score + 1
+        self.ballYSpeed = -self.ballYSpeed
     end
 
     -- hits player paddle
+    -- hits player paddle
     if self.ball.x - self.ball.r <= self.player.x + self.player.w
-       and self.ball.y >= self.player.y
-       and self.ball.y <= self.player.y + self.player.h then
+    and self.ball.y >= self.player.y
+    and self.ball.y <= self.player.y + self.player.h then
+
         self.ballSpeed = -self.ballSpeed
+
+        -- Calculate vertical offset from center of paddle
+        local paddleCenter = self.player.y + self.player.h / 2
+        local impactOffset = self.ball.y - paddleCenter
+
+        -- Normalize offset to range [-1, 1]
+        local normalized = impactOffset / (self.player.h / 2)
+
+        -- Scale to a reasonable speed
+        local maxYSpeed = 3.5
+        self.ballYSpeed = normalized * maxYSpeed
     end
+
 
     -- enters death zone
     if self.ball.x - self.ball.r <= self.death.x + self.death.w then
@@ -60,6 +77,8 @@ function Game:update(dt)
 
     -- ball movement & collisions
     self.ball.x = self.ball.x + self.ballSpeed
+    self.ball.y = self.ball.y + self.ballYSpeed
+
     self:handleBallCollision()
 
     -- paddle control

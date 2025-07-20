@@ -7,19 +7,32 @@ Game = {
         screenHeight = 600, 
     }, 
 
-    time = 0
+    state = "start"
 }
 
 function Game:update(dt)
-   Player:update(dt)
-   Clock:update(dt)
+    if self.state == "start" then
+        if love.keyboard.isDown("1") then self.state = "game" end
+        if love.keyboard.isDown("2") then love.event.quit() end
+    elseif self.state == "game" then
+        Player:update(dt)
+        Clock:update(dt)
+    end
 end
 
 function Game:draw()
-    -- draw player
-    Player:draw()
-    love.graphics.print(Clock:getTimeString(), 20, 20)
-    Clock:draw()
+    if self.state == "start" then
+        love.graphics.setColor(1,1,1)
+        love.graphics.print("Press 1 to start", 350, 250)
+        love.graphics.setColor(1, 0, 0)
+        love.graphics.print("Press 2 to quit", 350, 275)
+    elseif self.state == "game" then
+        -- draw player
+        Player:draw()
+        love.graphics.print(Clock:getTimeString(), 20, 20)
+        Clock:draw()
+    end
+
 end
   
 function love.load()

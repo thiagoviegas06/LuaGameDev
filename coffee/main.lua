@@ -19,6 +19,7 @@ function Game:draw()
     -- draw player
     Player:draw()
     love.graphics.print(Clock:getTimeString(), 20, 20)
+    Clock:draw()
 end
   
 function love.load()

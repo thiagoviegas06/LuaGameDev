@@ -1,4 +1,5 @@
 -- clock handler
+local TaskGenerator = require("taskGenerator")
 
 local Clock = {
     hour = 8,
@@ -24,6 +25,14 @@ function Clock:incrementMinute()
         self.minutes = 0
         self:incrementHour()
     end
+
+    -- decrement how long
+    TaskGenerator:decrementTime()
+
+    if TaskGenerator:isTimeToNextTask() then
+        TaskGenerator:generateTask()
+        TaskGenerator:setTimeForNextTask()
+    end
 end
 
 function Clock:incrementHour()
@@ -33,6 +42,11 @@ function Clock:incrementHour()
         self.hour = 0
         self.day = self.day + 1
     end
+end
+
+
+function Clock:draw()
+    TaskGenerator:draw()
 end
 
 function Clock:getTimeString()

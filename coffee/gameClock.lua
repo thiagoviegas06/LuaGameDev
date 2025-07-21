@@ -49,6 +49,15 @@ function Clock:draw()
     TaskGenerator:draw()
 end
 
+function Clock:getHour()
+    return self.hour
+end
+
+function Clock:getMinutes()
+    return self.minutes
+end
+
+
 function Clock:getTimeString()
     return string.format("Day %d - %02d:%02d", self.day, self.hour, self.minutes)
 end
